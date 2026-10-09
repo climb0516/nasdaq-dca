@@ -246,6 +246,45 @@
 
     .note { font-size: 13px; color: var(--text-3); margin-top: 12px; padding: 0 4px; line-height: 1.6; }
 
+    /* ── 综合评分榜 ── */
+    .rank-row { grid-template-columns: 32px 1fr auto; align-items: start; padding-top: 14px; padding-bottom: 14px; }
+    .rank-row + .rank-row::before { left: 64px; }
+    .rank-no {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-2);
+      background: var(--seg-bg);
+      font-variant-numeric: tabular-nums;
+    }
+    .rank-1 { background: linear-gradient(135deg, #f7d774, #d4a017); color: #fff; }
+    .rank-2 { background: linear-gradient(135deg, #d9d9de, #9a9aa0); color: #fff; }
+    .rank-3 { background: linear-gradient(135deg, #e3a878, #b87333); color: #fff; }
+    .rank-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .rank-title .row-title { flex-shrink: 1; }
+    .rank-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 6px; font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+    .rank-meta b { font-weight: 600; color: var(--text-1); }
+    .rank-meta .miss { color: var(--text-3); }
+    .rank-bar { height: 4px; border-radius: 2px; background: var(--seg-bg); margin-top: 10px; overflow: hidden; }
+    .rank-bar > i { display: block; height: 100%; border-radius: 2px; background: var(--blue); }
+    .rank-score { text-align: right; }
+    .rank-total { font-size: 28px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .rank-total small { font-size: 13px; font-weight: 500; color: var(--text-3); margin-left: 1px; }
+    .rank-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .row.off .rank-total { color: var(--text-3); }
+
+    .method { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .method .card { padding: 20px; }
+    .method h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .method h4 span { color: var(--text-3); font-weight: 400; }
+    .method-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-2); padding: 3px 0; }
+    .method-row b { color: var(--text-1); font-weight: 600; font-variant-numeric: tabular-nums; }
+
     /* ── 分段控件 ── */
     .segmented {
       display: inline-flex;
@@ -306,6 +345,12 @@
       .plan-row .tag { display: none; }
       .plan-row { grid-template-columns: 1fr auto; }
       .budget-row { grid-template-columns: 1fr; gap: 2px; }
+      .rank-row { grid-template-columns: 28px 1fr auto; }
+      .rank-row + .rank-row::before { left: 54px; }
+      .rank-no { width: 26px; height: 26px; font-size: 13px; }
+      .rank-total { font-size: 24px; }
+      .rank-meta { font-size: 12px; gap: 2px 10px; }
+      .method { grid-template-columns: 1fr; gap: 12px; }
       .fund-head, .fund-row { grid-template-columns: 1fr 72px 72px; }
       .fund-head .hide-m, .fund-row .hide-m { display: none; }
       .segmented { display: flex; }
@@ -320,6 +365,7 @@
     <span class="nav-brand">纳指定投</span>
     <div class="nav-links" id="nav-links">
       <a href="#basics">场内 vs 场外</a>
+      <a href="#rank">综合排名</a>
       <a href="#plan">每日方案</a>
       <a href="#budget">按预算缩减</a>
       <a href="#funds">限额总表</a>
@@ -371,6 +417,32 @@
         <p class="analogy">🔁 像在<strong>二手市场</strong>：随时买、不限量，紧缺时被炒高价。</p>
       </div>
     </div>
+  </section>
+
+  <!-- 综合评分榜 -->
+  <section id="rank">
+    <div class="sec-head">
+      <h2 class="sec-title">综合评分榜</h2>
+      <p class="sec-sub">用户使用量与信任度占一半，基金本身的质量占一半。每家公司只排一只（以 A 类为代表），人数类数据合并该公司所有人民币份额。</p>
+    </div>
+    <div class="list" id="rank-body"></div>
+    <div class="method">
+      <div class="card">
+        <h4>用户使用量与信任度 <span>50%</span></h4>
+        <div class="method-row">近 1 月定投人数<b>20</b></div>
+        <div class="method-row">自选关注人数<b>10</b></div>
+        <div class="method-row">平均持有天数<b>10</b></div>
+        <div class="method-row">近一年份额增长<b>10</b></div>
+      </div>
+      <div class="card">
+        <h4>基金属性 <span>50%</span></h4>
+        <div class="method-row">年化跟踪误差（越小越好）<b>15</b></div>
+        <div class="method-row">年费率 管理 + 托管（越低越好）<b>15</b></div>
+        <div class="method-row">当前可买额度 / 日<b>12</b></div>
+        <div class="method-row">规模<b>8</b></div>
+      </div>
+    </div>
+    <p class="note">各项在同类中归一化为 0~100 分后加权；人数、额度、规模按对数计算。用户数据仅来自天天基金平台（支付宝数据不公开）。平均持有天数对 2023 年后成立的新基金偏低。整家公司全部暂停申购时，近 1 月定投人数无意义，按中位数计。缺失项按中位数计。权重为主观设定，排名仅供参考，不构成投资建议。</p>
   </section>
 
   <!-- 每日方案 -->
@@ -545,6 +617,118 @@
     document.getElementById('sum-year').textContent = `¥${fmt(total * 250)}`;
   }
 
+  // ── 综合评分 ──
+  const WEIGHTS = {
+    dt: 20, fav: 10, hold: 10, growth: 10,     // 用户使用量与信任度
+    te: 15, fee: 15, limit: 12, size: 8,       // 基金属性
+  };
+  const USER_KEYS = ['dt', 'fav', 'hold', 'growth'];
+  const FUND_KEYS = ['te', 'fee', 'limit', 'size'];
+  // 原始值 → 可比较的值（越大越好）
+  const TRANSFORM = {
+    dt: v => Math.log1p(v),
+    fav: v => Math.log1p(v),
+    hold: v => v,
+    growth: v => Math.log1p(Math.max(v, -0.99)),
+    te: v => -v,
+    fee: v => -v,
+    limit: v => Math.log1p(v),
+    size: v => Math.log1p(v),
+  };
+  const wan = n => n == null ? null : n >= 1e4 ? `${(n / 1e4).toFixed(1)}万` : `${Math.round(n)}`;
+  const median = arr => {
+    const s = [...arr].sort((a, b) => a - b);
+    const m = s.length >> 1;
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  };
+
+  function companyMetrics(company, funds) {
+    const rep = funds.find(f => f.share === 'A') || funds[0];
+    const sum = k => funds.reduce((s, f) => s + (f[k] || 0), 0);
+    const open = funds.filter(f => f.status !== '暂停');
+    const limit = open.length ? Math.max(...open.map(f => Math.max(f.direct_limit || 0, f.agency_limit || 0))) : 0;
+    const dt = sum('dt_count');
+    const withShares = funds.filter(f => f.shares_now && f.shares_1y_ago);
+    const sharesAgo = withShares.reduce((s, f) => s + f.shares_1y_ago, 0);
+    const sharesNow = withShares.reduce((s, f) => s + f.shares_now, 0);
+    return {
+      company, rep,
+      // 没有任何份额能拿到明确额度（例如只剩额度未知的 D 类）也视为买不到
+      paused: limit === 0,
+      raw: {
+        // 全部暂停时近 1 月无法定投，人数为 0 不代表没人用，按缺失处理
+        dt: !open.length && dt === 0 ? null : dt,
+        fav: sum('fav_count') || null,
+        hold: rep.avg_hold ?? null,
+        growth: sharesAgo ? sharesNow / sharesAgo - 1 : null,
+        te: rep.tracking_error ?? null,
+        fee: rep.mgmt_fee != null && rep.custody_fee != null ? rep.mgmt_fee + rep.custody_fee : null,
+        limit,
+        size: sum('size') || null,
+      },
+    };
+  }
+
+  function buildRanking() {
+    const byCompany = {};
+    DATA.funds.forEach(f => (byCompany[f.company] ||= []).push(f));
+    const rows = Object.entries(byCompany).map(([c, fs]) => companyMetrics(c, fs));
+
+    for (const key of Object.keys(WEIGHTS)) {
+      const vals = rows.map(r => r.raw[key] == null ? null : TRANSFORM[key](r.raw[key]));
+      const present = vals.filter(v => v != null);
+      const min = Math.min(...present), max = Math.max(...present);
+      const scores = vals.map(v => v == null ? null : max === min ? 100 : (v - min) / (max - min) * 100);
+      const med = median(scores.filter(s => s != null));
+      rows.forEach((r, i) => {
+        (r.score ||= {})[key] = scores[i] ?? med;
+        (r.missing ||= {})[key] = scores[i] == null;
+      });
+    }
+
+    const weighted = (r, keys) => keys.reduce((s, k) => s + r.score[k] * WEIGHTS[k], 0) / keys.reduce((s, k) => s + WEIGHTS[k], 0);
+    rows.forEach(r => {
+      r.userScore = weighted(r, USER_KEYS);
+      r.fundScore = weighted(r, FUND_KEYS);
+      r.total = weighted(r, [...USER_KEYS, ...FUND_KEYS]);
+    });
+    return rows.sort((a, b) => b.total - a.total);
+  }
+
+  function renderRanking() {
+    const rows = buildRanking();
+    document.getElementById('rank-body').innerHTML = rows.map((r, i) => {
+      const raw = r.raw;
+      const m = (key, text) => r.missing[key] ? `<span class="miss">${text.split(' ')[0]} 缺失</span>` : `<span>${text}</span>`;
+      const growth = raw.growth == null ? '' : `${raw.growth >= 0 ? '+' : ''}${Math.round(raw.growth * 100)}%`;
+      const name = r.rep.name.replace(/[A-Z]$/, '');
+      return `<div class="row rank-row ${r.paused ? 'off' : ''}">
+        <div class="rank-no ${i < 3 ? 'rank-' + (i + 1) : ''}">${i + 1}</div>
+        <div class="row-main">
+          <div class="rank-title">
+            <div class="row-title">${name}</div>
+            ${r.paused ? '<span class="tag tag-red">暂停</span>' : ''}
+          </div>
+          <div class="row-sub">${r.rep.code}${r.rep.share !== 'A' ? '' : ' · A 类'}</div>
+          <div class="rank-meta">
+            ${m('dt', `定投 <b>${wan(raw.dt)}</b> 人`)}
+            ${m('fav', `自选 <b>${wan(raw.fav)}</b>`)}
+            ${m('hold', `持有 <b>${Math.round(raw.hold)}</b> 天`)}
+            ${m('growth', `份额 <b>${growth}</b>`)}
+            ${m('te', `跟踪误差 <b>${raw.te}%</b>`)}
+            ${m('fee', `年费 <b>${raw.fee != null ? raw.fee.toFixed(2) : ''}%</b>`)}
+            <span>额度 <b>${raw.limit ? fmt(raw.limit) + ' 元' : '暂停'}</b></span>
+          </div>
+          <div class="rank-bar"><i style="width:${r.total.toFixed(1)}%"></i></div>
+        </div>
+        <div class="rank-score">
+          <div class="rank-total">${Math.round(r.total)}<small>分</small></div>
+          <div class="rank-sub">用户 ${Math.round(r.userScore)} · 基金 ${Math.round(r.fundScore)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
   function matches(f) {
     if (filter === 'open') return f.status !== '暂停';
     if (filter === 'paused') return f.status === '暂停';
@@ -603,6 +787,7 @@
     .then(d => {
       DATA = d;
       document.getElementById('updated').textContent = `限额更新于 ${d.updated_at || '—'}`;
+      renderRanking();
       renderPlan();
       renderFunds();
     })
