@@ -177,13 +177,18 @@
 
     /* ── iOS 分组列表 ── */
     .group-label {
-      font-size: 13px;
-      color: var(--text-2);
-      text-transform: uppercase;
-      padding: 0 20px 6px;
-      margin-top: 20px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-1);
+      padding: 0 4px 10px;
+      margin-top: 32px;
     }
     .group-label:first-child { margin-top: 0; }
+    .group-sum { font-size: 15px; font-weight: 400; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
     .list {
       background: var(--card);
       border-radius: 14px;
@@ -296,7 +301,8 @@
       .card { padding: 20px; }
       .row { padding: 11px 16px; gap: 10px; }
       .row + .row::before { left: 16px; }
-      .group-label { padding: 0 16px 6px; }
+      .group-label { font-size: 18px; padding: 0 4px 8px; }
+      .group-sum { font-size: 14px; }
       .plan-row .tag { display: none; }
       .plan-row { grid-template-columns: 1fr auto; }
       .budget-row { grid-template-columns: 1fr; gap: 2px; }
@@ -513,10 +519,13 @@
     for (const g of groups) {
       const items = DATA.plan.filter(p => p.channel === g.channel);
       if (!items.length) continue;
+      let subtotal = 0;
+      let active = 0;
       const rows = items.map(item => {
         const f = byCode[item.code];
         const amt = planAmount(item, f);
-        total += amt;
+        subtotal += amt;
+        if (amt) active++;
         const sub = g.channel === 'direct' ? `${item.app} · ${item.code}` : item.code;
         return `<div class="row plan-row ${amt ? '' : 'off'}">
           <div class="row-main">
@@ -527,7 +536,8 @@
           <div class="row-val">${amt ? `${fmt(amt)} 元` : '0'}</div>
         </div>`;
       }).join('');
-      html += `<div class="group-label">${g.label}</div><div class="list">${rows}</div>`;
+      total += subtotal;
+      html += `<div class="group-label"><span>${g.label}</span><span class="group-sum">${active} 只 · ¥${fmt(subtotal)}/日</span></div><div class="list">${rows}</div>`;
     }
     document.getElementById('plan-body').innerHTML = html;
     document.getElementById('sum-day').textContent = `¥${fmt(total)}`;
