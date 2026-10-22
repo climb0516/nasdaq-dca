@@ -28,8 +28,9 @@
       --seg-active: #ffffff;
       --shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
+    /* 深色：默认跟随系统，手动切换后写 data-theme */
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
         --bg: #000000;
         --card: #1c1c1e;
         --card-2: #2c2c2e;
@@ -49,6 +50,26 @@
         --seg-active: #636366;
         --shadow: none;
       }
+    }
+    :root[data-theme="dark"] {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --card-2: #2c2c2e;
+      --nav-bg: rgba(22,22,23,0.8);
+      --sep: rgba(255,255,255,0.12);
+      --text-1: #f5f5f7;
+      --text-2: #a1a1a6;
+      --text-3: #6e6e73;
+      --blue: #2997ff;
+      --green: #30d158;
+      --green-bg: rgba(48,209,88,0.16);
+      --orange: #ff9f0a;
+      --orange-bg: rgba(255,159,10,0.16);
+      --red: #ff453a;
+      --red-bg: rgba(255,69,58,0.16);
+      --seg-bg: rgba(118,118,128,0.24);
+      --seg-active: #636366;
+      --shadow: none;
     }
 
     html { scroll-behavior: smooth; }
@@ -342,7 +363,7 @@
       .row + .row::before { left: 16px; }
       .group-label { font-size: 18px; padding: 0 4px 8px; }
       .group-sum { font-size: 14px; }
-      .plan-row .tag { display: none; }
+      .plan-row > .tag { display: none; }
       .plan-row { grid-template-columns: 1fr auto; }
       .budget-row { grid-template-columns: 1fr; gap: 2px; }
       .rank-row { grid-template-columns: 28px 1fr auto; }
@@ -355,6 +376,123 @@
       .fund-head .hide-m, .fund-row .hide-m { display: none; }
       .segmented { display: flex; }
       .segmented button { flex: 1; padding: 6px 4px; }
+    }
+    /* ── 详情抽屉 + 列表页（通用组件 kit：电脑右侧滑出，手机底部升起；地址 #/item/类型/id、#/list/key） ── */
+    :root { --kit-bg: var(--bg, #0b0a10); --kit-panel: var(--panel, var(--card, rgba(255,255,255,.04))); --kit-line: var(--line, var(--sep, rgba(255,255,255,.08)));
+      --kit-line2: var(--line-2, rgba(255,255,255,.14)); --kit-t1: var(--text-1, #f1eff7); --kit-t2: var(--text-2, #a39fb3); --kit-t3: var(--text-3, #6b677a);
+      --kit-accent: var(--accent, #a3e635); --kit-hover: var(--hover, rgba(255,255,255,.05)); }
+    .kit-mask { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.38); display: none; }
+    .kit-mask.open { display: block; }
+    .kit-sheet { position: absolute; top: 12px; right: 12px; bottom: 12px; width: clamp(440px, 42vw, 620px); max-width: calc(100vw - 24px);
+      display: flex; flex-direction: column; overflow: hidden; color: var(--kit-t1); border-radius: 18px;
+      background: linear-gradient(var(--kit-panel), var(--kit-panel)), var(--kit-bg); box-shadow: 0 0 0 1px var(--kit-line2), 0 24px 60px rgba(0,0,0,.45);
+      animation: kit-in .24s ease-out; }
+    @keyframes kit-in { from { transform: translateX(40px); opacity: 0; } }
+    .kit-x { position: absolute; top: 12px; right: 12px; z-index: 3; width: 32px; height: 32px; border-radius: 50%; border: 0; cursor: pointer;
+      background: rgba(0,0,0,.5); color: #fff; font-size: 15px; display: grid; place-items: center; }
+    .kit-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+    .kit-cover { aspect-ratio: 16/9; background: var(--kit-hover) center / cover no-repeat; position: relative; }
+    .kit-cover.tall { aspect-ratio: auto; height: 280px; background-size: contain; background-color: #000; }
+    .kit-cover.ph { display: grid; place-items: center; font-size: 56px; aspect-ratio: 16/6; }
+    .kit-head { padding: 18px 20px 4px; display: flex; gap: 14px; align-items: flex-start; }
+    .kit-head .kit-thumb { flex-shrink: 0; width: 64px; height: 64px; border-radius: 14px; background: var(--kit-hover) center / cover no-repeat;
+      display: grid; place-items: center; font-size: 28px; overflow: hidden; }
+    .kit-head .kit-t { flex: 1; min-width: 0; padding-right: 30px; }
+    .kit-cover + .kit-head .kit-t { padding-right: 0; }
+    .kit-head h2 { font-size: 19px; font-weight: 800; line-height: 1.35; letter-spacing: -0.01em; }
+    .kit-sub { color: var(--kit-t2); font-size: 13px; margin-top: 4px; }
+    .kit-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .kit-tags span { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--kit-hover); color: var(--kit-t2); }
+    .kit-big { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .kit-big b { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+    .kit-body { padding: 4px 20px 20px; }
+    .kit-sec { padding-top: 16px; }
+    .kit-sec + .kit-sec { margin-top: 6px; border-top: 1px solid var(--kit-line); }
+    .kit-sec h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .kit-sec h4 small { font-size: 12px; color: var(--kit-t3); font-weight: 500; }
+    .kit-kv { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+    .kit-kv div { background: var(--kit-hover); border-radius: 10px; padding: 8px 11px; min-width: 0; }
+    .kit-kv small { display: block; font-size: 11px; color: var(--kit-t3); }
+    .kit-kv b { display: block; font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+    .kit-p { font-size: 13.5px; line-height: 1.75; color: var(--kit-t2); white-space: pre-line; }
+    .kit-rows { display: flex; flex-direction: column; }
+    .kit-row { display: flex; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--kit-line); font-size: 13px; text-decoration: none; color: inherit; }
+    .kit-row:first-child { border-top: 0; }
+    .kit-row[data-kit-go], a.kit-row { cursor: pointer; }
+    .kit-row[data-kit-go]:hover .kit-rt, a.kit-row:hover .kit-rt { color: var(--kit-accent); }
+    .kit-row .kit-rt { flex: 1; min-width: 0; line-height: 1.45; }
+    .kit-row .kit-rm { color: var(--kit-t3); font-size: 12px; white-space: nowrap; }
+    .kit-row img, .kit-row .kit-ri { width: 54px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: var(--kit-hover); }
+    .kit-acts { flex-shrink: 0; display: flex; gap: 10px; padding: 12px 20px 16px; border-top: 1px solid var(--kit-line); }
+    .kit-acts a, .kit-acts button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 12px; border-radius: 11px;
+      font: inherit; font-size: 13.5px; font-weight: 700; text-decoration: none; cursor: pointer; border: 1px solid var(--kit-line2); color: var(--kit-t1); background: transparent; }
+    .kit-acts .pri { background: var(--kit-accent); border-color: var(--kit-accent); color: #111; }
+    .kit-acts a:hover, .kit-acts button:hover { filter: brightness(1.08); }
+    /* 列表页 */
+    .kit-lhead { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .kit-back { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--kit-line2); background: transparent; color: var(--kit-t1);
+      font-size: 20px; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; }
+    .kit-back:hover { background: var(--kit-hover); }
+    .kit-lhead h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .kit-lhead small { color: var(--kit-t3); font-size: 12.5px; margin-left: 2px; }
+    .kit-lbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .kit-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .kit-chips a, .kit-chips button { padding: 5px 12px; border-radius: 8px; background: var(--kit-hover); color: var(--kit-t2); font: inherit; font-size: 13px;
+      font-weight: 600; white-space: nowrap; border: 0; cursor: pointer; text-decoration: none; }
+    .kit-chips .on { background: var(--kit-t1); color: var(--kit-bg); }
+    .kit-chips small { opacity: .6; margin-left: 4px; font-weight: 500; }
+    .kit-sel { padding: 6px 10px; border-radius: 9px; border: 1px solid var(--kit-line2); background: transparent; color: var(--kit-t1); font: inherit; font-size: 12.5px; font-weight: 600; }
+    .kit-sel option { background: var(--kit-bg); }
+    .kit-more { display: block; margin: 16px auto 0; padding: 9px 22px; border-radius: 10px; border: 1px solid var(--kit-line2); background: transparent;
+      color: var(--kit-t1); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .kit-more:hover { background: var(--kit-hover); }
+    .kit-morelink { font-size: 13px; font-weight: 600; color: var(--kit-t2); text-decoration: none; white-space: nowrap; cursor: pointer; }
+    .kit-morelink:hover { color: var(--kit-t1); }
+    [data-kit-item] { cursor: pointer; }
+    @media (max-width: 760px) {
+      .kit-sheet { top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-width: none; height: 86vh; border-radius: 18px 18px 0 0; animation: kit-up .26s ease-out; }
+      @keyframes kit-up { from { transform: translateY(30%); opacity: .5; } }
+      .kit-head { padding: 16px 16px 4px; } .kit-body { padding: 4px 16px 18px; } .kit-acts { padding: 10px 16px 16px; }
+      .kit-cover.tall { height: 220px; }
+      .kit-head .kit-thumb { width: 46px; height: 46px; border-radius: 12px; font-size: 22px; }
+      .kit-head h2 { font-size: 17.5px; }
+      .kit-big b { font-size: 24px; }
+      .kit-lhead h2 { font-size: 19px; }
+    }
+    /* kit 配色映射到本站变量（本站是 --card / --sep 体系） */
+    :root { --kit-panel: var(--card); --kit-line: var(--sep); --kit-line2: var(--sep); --kit-accent: var(--blue); --kit-hover: var(--seg-bg); }
+    .kit-acts .pri { color: #fff; }
+    .kit-sheet a:hover, .kit-morelink:hover, a.row:hover { text-decoration: none; }
+    .kit-sheet .tag { font-size: 11px; padding: 1px 8px; }
+    .kit-tags .tag-green { color: var(--green); background: var(--green-bg); }
+    .kit-tags .tag-orange { color: var(--orange); background: var(--orange-bg); }
+    .kit-tags .tag-red { color: var(--red); background: var(--red-bg); }
+    .kit-tags .tag-blue { color: var(--blue); background: rgba(0,113,227,0.1); }
+    .kit-sheet table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .kit-sheet th, .kit-sheet td { padding: 7px 6px; text-align: right; border-top: 0.5px solid var(--sep); white-space: nowrap; }
+    .kit-sheet th { color: var(--text-3); font-weight: 500; font-size: 12px; border-top: 0; }
+    .kit-sheet th:first-child, .kit-sheet td:first-child { text-align: left; white-space: normal; }
+    @media (max-width: 734px) { .kit-sheet td .rank-bar { width: 36px; } }
+    .kit-sheet td .rank-bar { margin-top: 0; width: 64px; display: inline-block; vertical-align: middle; }
+    .kit-sheet .miss { color: var(--text-3); }
+    /* 可点开详情的行 */
+    .row[data-kit-item] { cursor: pointer; transition: background 0.15s; }
+    .row[data-kit-item]:hover { background: var(--card-2); }
+    .sec-head.with-more { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+    .more-row { display: flex; justify-content: center; min-height: 48px; font-size: 15px; color: var(--blue); }
+    .show-m { display: none; }
+    .row-sub .tag { font-size: 11px; padding: 1px 7px; vertical-align: 1px; }
+    #list-page { padding-top: 32px; padding-bottom: 80px; }
+    #list-page .kit-lhead h2 { font-size: 28px; }
+    /* 深浅色切换按钮 */
+    .theme-btn { width: 30px; height: 30px; border-radius: 50%; border: 0.5px solid var(--sep); background: transparent; color: var(--text-2);
+      display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+    .theme-btn:hover { color: var(--text-1); background: var(--seg-bg); }
+    @media (max-width: 734px) {
+      .show-m { display: inline; }   /* 手机上隐藏了份额/状态列，改在代码后面用标签展示 */
+      .nav-inner { gap: 12px; }
+      #list-page { padding-top: 20px; }
+      #list-page .kit-lhead h2 { font-size: 22px; }
     }
   </style>
 </head>
@@ -373,10 +511,13 @@
       <a href="#tips">注意事项</a>
       <a href="#onexchange">场内 & 境外</a>
     </div>
+    <button class="theme-btn" id="theme" title="切换深浅色"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   </div>
 </nav>
 
-<header class="container hero">
+<div class="container" id="list-page" hidden></div>
+
+<header class="container hero" id="home-hero">
   <p class="hero-eyebrow">纳斯达克100 · 场外定投</p>
   <h1>纳指场外定投指南</h1>
   <p class="hero-sub">支付宝 + 基金公司 App，把纳斯达克100 的场外定投额度用满</p>
@@ -388,7 +529,7 @@
   </div>
 </header>
 
-<main class="container">
+<main class="container" id="home-main">
 
   <!-- 场内 vs 场外 -->
   <section id="basics">
@@ -471,7 +612,7 @@
 
   <!-- 限额总表 -->
   <section id="funds">
-    <div class="sec-head"><h2 class="sec-title">纳指100 场外基金限额总表</h2></div>
+    <div class="sec-head with-more"><h2 class="sec-title">纳指100 场外基金限额总表</h2><a class="kit-morelink" id="fund-more" href="#/list/funds">全部 →</a></div>
     <div class="segmented" id="filters">
       <button class="active" data-f="all">全部</button>
       <button data-f="open">可定投</button>
@@ -564,6 +705,134 @@
 </footer>
 
 <script>
+// ── kit：详情抽屉 + 列表页路由（各站通用，内联在页面里）──
+// 用法：
+//   KIT.item('news', id => ({ title, sub, cover, thumb, tags:[], big, body:'<div class="kit-sec">…</div>', acts:[{text, href, pri}] }))
+//   KIT.list('news', (param, query) => { … 把列表页 HTML 写进容器 … })
+//   条目元素加 data-kit-item="news/<id>" 即可点击打开详情；「查看更多」写成 <a href="#/list/news">
+//   站点首页渲染函数里先调用 KIT.route() —— 返回 true 表示当前是列表页（已渲染），首页不用再渲染
+const KIT = (() => {
+  const items = {}, lists = {};
+  let mask, homeY = 0, fromHome = 0, lastHash = location.hash, onHome = null, listBox = null;
+  const kesc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const parse = h => {
+    const m = (h === undefined ? location.hash : h).match(/^#\/(item|list)\/([^?]+?)(?:\?(.*))?$/);
+    if (!m) return null;
+    const [type, ...rest] = m[2].split('/');
+    return { kind: m[1], type: decodeURIComponent(type), id: rest.map(decodeURIComponent).join('/'), q: new URLSearchParams(m[3] || '') };
+  };
+  function ensure() {
+    if (mask) return;
+    mask = document.createElement('div');
+    mask.className = 'kit-mask';
+    mask.innerHTML = '<div class="kit-sheet" role="dialog" aria-modal="true"></div>';
+    document.body.appendChild(mask);
+    mask.addEventListener('click', e => { if (e.target === mask || e.target.closest('[data-kit-close]')) close(); });
+  }
+  function render(d) {
+    ensure();
+    const cover = d.cover ? `<div class="kit-cover ${d.coverTall ? 'tall' : ''}" style="background-image:url('${kesc(d.cover).replace(/'/g, '%27')}')"></div>`
+      : d.coverIcon ? `<div class="kit-cover ph" style="background:${d.coverBg || 'var(--kit-hover)'}">${d.coverIcon}</div>` : '';
+    const thumb = !d.cover && !d.coverIcon && (d.thumb || d.thumbIcon)
+      ? `<div class="kit-thumb" style="${d.thumb ? `background-image:url('${kesc(d.thumb).replace(/'/g, '%27')}')` : ''}${d.thumbBg ? `;background-color:${d.thumbBg}` : ''}">${d.thumb ? '' : d.thumbIcon}</div>` : '';
+    const acts = (d.acts || []).filter(a => a && (a.href || a.onclick));
+    mask.firstElementChild.innerHTML = `<button class="kit-x" data-kit-close aria-label="关闭">✕</button>
+      <div class="kit-scroll">${cover}
+        <div class="kit-head">${thumb}<div class="kit-t"><h2>${kesc(d.title)}</h2>${d.sub ? `<div class="kit-sub">${d.sub}</div>` : ''}
+          ${(d.tags || []).filter(Boolean).length ? `<div class="kit-tags">${d.tags.filter(Boolean).join('')}</div>` : ''}${d.big ? `<div class="kit-big">${d.big}</div>` : ''}</div></div>
+        <div class="kit-body">${d.body || ''}</div></div>
+      ${acts.length ? `<div class="kit-acts">${acts.map((a, i) => a.href
+        ? `<a class="${a.pri || (i === 0 && acts.length < 3) ? 'pri' : ''}" href="${kesc(a.href)}" ${a.self ? '' : 'target="_blank" rel="noopener"'}>${a.text}</a>`
+        : `<button class="${a.pri ? 'pri' : ''}" data-kit-act="${i}">${a.text}</button>`).join('')}</div>` : ''}`;
+    acts.forEach((a, i) => { if (!a.href) { const b = mask.querySelector(`[data-kit-act="${i}"]`); if (b) b.onclick = a.onclick; } });
+    mask.querySelector('.kit-scroll').scrollTop = 0;
+    mask.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  // 打开详情：写进地址（可分享；浏览器返回 = 关闭）
+  function open(key) {
+    const target = '#/item/' + key;
+    if (location.hash === target) return show(parse(target));
+    ensure();
+    if (parse()?.kind === 'item') history.replaceState(history.state, '', target);
+    else { mask.dataset.base = location.hash; history.pushState({ kit: 1 }, '', target); }
+    lastHash = target;
+    show(parse(target));
+  }
+  function show(r) {
+    const fn = items[r.type];
+    const d = fn && fn(r.id, r.q);
+    if (!d) { close(true); return false; }
+    render(d);
+    return true;
+  }
+  function close(silent) {
+    if (!mask || !mask.classList.contains('open')) return;
+    mask.classList.remove('open');
+    document.body.style.overflow = '';
+    if (!silent && parse()?.kind === 'item') {
+      if (history.state && history.state.kit) history.back();          // 从页面里点开的：退回去
+      else { history.replaceState(null, '', mask.dataset.base || location.pathname + location.search); lastHash = location.hash; }   // 直接打开的分享链接
+    }
+  }
+  // 当前地址是列表页时渲染列表页并返回 true；首页时返回 false
+  function route(box) {
+    if (box) listBox = box;
+    const r = parse();
+    if (r && r.kind === 'list' && lists[r.type]) { lists[r.type](r.id, r.q, listBox); return true; }
+    return false;
+  }
+  // 列表页的公共外壳：返回按钮 + 标题 + 子分类 + 排序
+  function shell({ title, note, chips, sort, sortVal, body, more }) {
+    return `<div class="kit-lhead"><button class="kit-back" data-kit-back title="返回">‹</button><h2>${kesc(title)}</h2>${note ? `<small>${note}</small>` : ''}</div>
+      ${chips || sort ? `<div class="kit-lbar"><div class="kit-chips">${(chips || []).map(c => `<a class="${c.on ? 'on' : ''}" href="${kesc(c.href)}">${kesc(c.text)}${c.count != null ? `<small>${c.count}</small>` : ''}</a>`).join('')}</div>
+        ${sort ? `<select class="kit-sel" data-kit-sort>${sort.map(([v, n]) => `<option value="${kesc(v)}" ${v === sortVal ? 'selected' : ''}>${kesc(n)}</option>`).join('')}</select>` : ''}</div>` : ''}
+      ${body}${more ? `<button class="kit-more" data-kit-more>${more}</button>` : ''}`;
+  }
+  function init(home) {
+    onHome = home;
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-kit-item],[data-kit-go],[data-kit-back]');
+      if (!t) return;
+      const inner = e.target.closest('a[href],button,input,select,label,summary');   // 卡片里的其它按钮 / 链接（关注、复制…）优先
+      if (inner && inner !== t && t.contains(inner)) return;
+      e.preventDefault();
+      if (t.dataset.kitBack !== undefined) { fromHome && history.length > fromHome ? history.go(-fromHome) : (location.hash = ''); return; }
+      open(t.dataset.kitItem || t.dataset.kitGo);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    window.addEventListener('hashchange', () => {
+      const r = parse();
+      let was = parse(lastHash), steps = 1;
+      if (was && was.kind === 'item') {                                 // 从详情离开
+        const base = mask && mask.dataset.base !== undefined ? mask.dataset.base : '';
+        if (location.hash === base) { lastHash = location.hash; close(true); return; }   // 只是关掉详情，底下页面不动
+        was = parse(base); steps = 2;                                   // 在详情里点了别的列表：按详情底下那页算，返回要退两步
+      }
+      lastHash = location.hash;
+      if (r && r.kind === 'item') { show(r); return; }
+      close(true);
+      const wasHome = !was;
+      if (r && r.kind === 'list') {
+        if (wasHome) { homeY = scrollY; fromHome = steps; }
+        onHome && onHome();
+        if (wasHome || was.type !== r.type) scrollTo(0, 0);
+      } else {
+        onHome && onHome();
+        if (fromHome) { scrollTo(0, homeY); fromHome = 0; }
+      }
+    });
+    // 直接打开带 #/item/ 的链接（比如大屏跳过来）：页面数据读完后由站点调用 KIT.boot()
+  }
+  function boot() { const r = parse(); if (r && r.kind === 'item') show(r); }
+  return { item: (t, fn) => (items[t] = fn), list: (t, fn) => (lists[t] = fn), open, close, route, shell, init, boot, parse, esc: kesc,
+    // 小工具：详情里的键值格、段落、关联列表
+    kv: rows => { const r = rows.filter(x => x && x[1] != null && x[1] !== ''); return r.length ? `<div class="kit-kv">${r.map(([k, v]) => `<div><small>${kesc(k)}</small><b title="${kesc(v)}">${kesc(v)}</b></div>`).join('')}</div>` : ''; },
+    sec: (title, html, note) => html ? `<div class="kit-sec"><h4>${title}${note ? `<small>${note}</small>` : ''}</h4>${html}</div>` : '',
+    p: t => t ? `<p class="kit-p">${kesc(t)}</p>` : '',
+  };
+})();
+
   const fmt = n => n == null ? '—' : n.toLocaleString('zh-CN');
   const statusTag = s => ({
     '限额': '<span class="tag tag-green">可定投</span>',
@@ -599,10 +868,10 @@
         subtotal += amt;
         if (amt) active++;
         const sub = g.channel === 'direct' ? `${item.app} · ${item.code}` : item.code;
-        return `<div class="row plan-row ${amt ? '' : 'off'}">
+        return `<div class="row plan-row ${amt ? '' : 'off'}" data-kit-item="fund/${item.code}">
           <div class="row-main">
             <div class="row-title">${f ? f.name : item.code}</div>
-            <div class="row-sub">${sub}</div>
+            <div class="row-sub">${sub}<span class="show-m"> ${statusTag(f && f.status)}</span></div>
           </div>
           ${statusTag(f && f.status)}
           <div class="row-val">${amt ? `${fmt(amt)} 元` : '0'}</div>
@@ -696,13 +965,13 @@
   }
 
   function renderRanking() {
-    const rows = buildRanking();
+    const rows = ranking();
     document.getElementById('rank-body').innerHTML = rows.map((r, i) => {
       const raw = r.raw;
       const m = (key, text) => r.missing[key] ? `<span class="miss">${text.split(' ')[0]} 缺失</span>` : `<span>${text}</span>`;
       const growth = raw.growth == null ? '' : `${raw.growth >= 0 ? '+' : ''}${Math.round(raw.growth * 100)}%`;
       const name = r.rep.name.replace(/[A-Z]$/, '');
-      return `<div class="row rank-row ${r.paused ? 'off' : ''}">
+      return `<div class="row rank-row ${r.paused ? 'off' : ''}" data-kit-item="company/${encodeURIComponent(r.company)}">
         <div class="rank-no ${i < 3 ? 'rank-' + (i + 1) : ''}">${i + 1}</div>
         <div class="row-main">
           <div class="rank-title">
@@ -729,36 +998,66 @@
     }).join('');
   }
 
-  function matches(f) {
-    if (filter === 'open') return f.status !== '暂停';
-    if (filter === 'paused') return f.status === '暂停';
-    if (filter === 'direct') return f.status !== '暂停' && f.direct_limit && (f.agency_limit == null || f.direct_limit > f.agency_limit);
+  const FILTERS = [['all', '全部'], ['open', '可定投'], ['direct', '直销更高'], ['paused', '暂停申购']];
+  function matches(f, flt = filter) {
+    if (flt === 'open') return f.status !== '暂停';
+    if (flt === 'paused') return f.status === '暂停';
+    if (flt === 'direct') return f.status !== '暂停' && f.direct_limit && (f.agency_limit == null || f.direct_limit > f.agency_limit);
     return true;
   }
 
-  function renderFunds() {
+  // ── 评分缓存（按公司算，基金沿用所属公司的分数）──
+  let RANK = null;
+  const ranking = () => RANK || (RANK = buildRanking());
+  const rankOf = f => ranking().find(r => r.company === f.company);
+  const feeOf = f => f.mgmt_fee != null && f.custody_fee != null ? f.mgmt_fee + f.custody_fee : null;
+  const limitOf = f => f.status === '暂停' ? 0 : Math.max(f.direct_limit || 0, f.agency_limit || 0);
+
+  // 排序：默认 = 状态 → 限额 → 规模
+  const SORTS = [['default', '默认排序'], ['limit', '限额 高→低'], ['fee', '年费率 低→高'], ['size', '规模 大→小'], ['score', '评分 高→低']];
+  function sortFunds(list, by = 'default') {
     const order = { '限额': 0, '开放': 0, '暂停': 2 };
-    const rows = DATA.funds.filter(matches).sort((a, b) =>
-      (order[a.status] ?? 1) - (order[b.status] ?? 1) ||
-      (b.direct_limit || b.agency_limit || 0) - (a.direct_limit || a.agency_limit || 0) ||
-      (b.size || 0) - (a.size || 0));
-    document.getElementById('fund-body').innerHTML = rows.map(f => {
-      const paused = f.status === '暂停';
-      const agency = paused ? '—' : f.direct_only ? '<span class="muted">不代销</span>' : (f.agency_limit != null ? `${fmt(f.agency_limit)} 元` : '—');
-      const higher = f.direct_limit && (f.agency_limit == null || f.direct_limit > f.agency_limit);
-      const direct = paused ? '—' : f.direct_limit ? `<span class="${higher ? 'up' : ''}">${fmt(f.direct_limit)} 元</span>` : '<span class="muted">同代销</span>';
-      return `<div class="row fund-row ${paused ? 'off' : ''}">
-        <div class="row-main">
-          <div class="row-title">${f.name}</div>
-          <div class="row-sub">${f.code}</div>
-        </div>
-        <div class="cell center hide-m">${f.share}</div>
-        <div class="cell center hide-m">${statusTag(f.status)}</div>
-        <div class="cell ${paused ? 'muted' : ''}">${agency}</div>
-        <div class="cell">${direct}</div>
-        <div class="cell hide-m muted">${f.size != null ? f.size : '—'}</div>
-      </div>`;
-    }).join('') || '<div class="row"><div class="muted" style="text-align:center">没有符合条件的基金</div></div>';
+    const def = (a, b) => (order[a.status] ?? 1) - (order[b.status] ?? 1) ||
+      (b.direct_limit || b.agency_limit || 0) - (a.direct_limit || a.agency_limit || 0) || (b.size || 0) - (a.size || 0);
+    const cmp = {
+      limit: (a, b) => limitOf(b) - limitOf(a),
+      fee: (a, b) => (feeOf(a) ?? 99) - (feeOf(b) ?? 99),
+      size: (a, b) => (b.size || 0) - (a.size || 0),
+      score: (a, b) => (rankOf(b)?.total || 0) - (rankOf(a)?.total || 0),
+    }[by];
+    return [...list].sort((a, b) => (cmp ? cmp(a, b) : 0) || def(a, b));
+  }
+
+  function fundRow(f) {
+    const paused = f.status === '暂停';
+    const agency = paused ? '—' : f.direct_only ? '<span class="muted">不代销</span>' : (f.agency_limit != null ? `${fmt(f.agency_limit)} 元` : '—');
+    const higher = f.direct_limit && (f.agency_limit == null || f.direct_limit > f.agency_limit);
+    const direct = paused ? '—' : f.direct_limit ? `<span class="${higher ? 'up' : ''}">${fmt(f.direct_limit)} 元</span>` : '<span class="muted">同代销</span>';
+    return `<div class="row fund-row ${paused ? 'off' : ''}" data-kit-item="fund/${f.code}">
+      <div class="row-main">
+        <div class="row-title">${f.name}</div>
+        <div class="row-sub">${f.code}<span class="show-m"> · ${f.share} 类 ${statusTag(f.status)}</span></div>
+      </div>
+      <div class="cell center hide-m">${f.share}</div>
+      <div class="cell center hide-m">${statusTag(f.status)}</div>
+      <div class="cell ${paused ? 'muted' : ''}">${agency}</div>
+      <div class="cell">${direct}</div>
+      <div class="cell hide-m muted">${f.size != null ? f.size : '—'}</div>
+    </div>`;
+  }
+  const FUND_HEAD = `<div class="row fund-head"><div>基金</div><div class="cell center hide-m">份额</div><div class="cell center hide-m">状态</div>
+    <div class="cell">代销/日</div><div class="cell">直销/日</div><div class="cell hide-m">规模(亿)</div></div>`;
+  const EMPTY_ROW = '<div class="row"><div class="muted" style="text-align:center">没有符合条件的基金</div></div>';
+
+  const HOME_N = 10;   // 首页只放前 10 只，其余进列表页
+  function renderFunds() {
+    const rows = sortFunds(DATA.funds.filter(f => matches(f)));
+    const q = filter === 'all' ? '' : '?f=' + filter;
+    document.getElementById('fund-body').innerHTML = (rows.slice(0, HOME_N).map(fundRow).join('') || EMPTY_ROW)
+      + (rows.length > HOME_N ? `<a class="row more-row" href="#/list/funds${q}">查看全部 ${rows.length} 只 →</a>` : '');
+    const more = document.getElementById('fund-more');
+    more.href = '#/list/funds' + q;
+    more.textContent = `全部 ${rows.length} 只 →`;
     const open = DATA.funds.filter(f => f.status !== '暂停').length;
     document.getElementById('fund-note').textContent =
       `共 ${DATA.funds.length} 只人民币份额，可申购 ${open} 只。直销限额手动更新于 ${DATA.direct_updated_at}，"同代销"表示未见直销单独额度。`;
@@ -772,6 +1071,123 @@
     renderFunds();
   });
 
+  // ── 详情（右侧抽屉）──
+  const KEY_NAMES = { dt: '近 1 月定投人数', fav: '自选关注人数', hold: '平均持有天数', growth: '近一年份额增长', te: '年化跟踪误差', fee: '年费率（管理+托管）', limit: '当前可买额度 / 日', size: '规模' };
+  const RAW_FMT = {
+    dt: v => wan(v) + ' 人', fav: v => wan(v), hold: v => Math.round(v) + ' 天',
+    growth: v => `${v >= 0 ? '+' : ''}${(v * 100).toFixed(1)}%`, te: v => v + '%', fee: v => v.toFixed(2) + '%',
+    limit: v => v ? fmt(v) + ' 元' : '暂停', size: v => v.toFixed(1) + ' 亿',
+  };
+  const ktag = (t, cls = '') => t ? `<span class="tag ${cls}">${t}</span>` : '';
+  const kstatus = s => ({ '限额': ktag('限额申购', 'tag-green'), '开放': ktag('开放', 'tag-green'), '暂停': ktag('暂停申购', 'tag-red') }[s] || ktag(s || '未知', 'tag-orange'));
+  const ttUrl = code => `https://fund.eastmoney.com/${code}.html`;
+  const pct = v => v == null ? '' : `${v >= 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
+
+  // 评分拆解表：各项原始值 / 0~100 分 / 权重
+  function scoreTable(r) {
+    const all = ranking(), no = all.indexOf(r) + 1;
+    const line = k => `<tr><td>${KEY_NAMES[k]}</td><td>${r.raw[k] == null ? '<span class="miss">缺失</span>' : RAW_FMT[k](r.raw[k])}</td>
+      <td><span class="rank-bar"><i style="width:${r.score[k].toFixed(0)}%"></i></span> <b>${Math.round(r.score[k])}</b>${r.missing[k] ? '<span class="miss">*</span>' : ''}</td><td>${WEIGHTS[k]}</td></tr>`;
+    return `<table><tr><th>指标</th><th>原始值</th><th>得分</th><th>权重</th></tr>
+      <tr><td colspan="4" style="text-align:left;color:var(--text-2)"><b>用户使用量与信任度</b> · ${Math.round(r.userScore)} 分</td></tr>${USER_KEYS.map(line).join('')}
+      <tr><td colspan="4" style="text-align:left;color:var(--text-2)"><b>基金属性</b> · ${Math.round(r.fundScore)} 分</td></tr>${FUND_KEYS.map(line).join('')}</table>
+      <p class="note">第 ${no} / ${all.length} 名 · 以 ${r.rep.name}（${r.rep.code}）为代表，人数、份额、规模合并该公司全部人民币份额。* 缺失项按中位数计。</p>`;
+  }
+  const fundLine = (f, cur) => `<div class="kit-row" ${f === cur ? '' : `data-kit-go="fund/${f.code}"`}><span class="kit-rt">${f === cur ? '<b>' : ''}${f.name}${f === cur ? '（当前）</b>' : ''}<br><span class="muted">${f.code} · ${f.share} 类</span></span>
+    <span class="kit-rm">${kstatus(f.status)} ${limitOf(f) ? fmt(limitOf(f)) + ' 元/日' : ''}</span></div>`;
+
+  KIT.item('fund', code => {
+    const f = DATA && DATA.funds.find(x => x.code === code); if (!f) return null;
+    const paused = f.status === '暂停', r = rankOf(f), fee = feeOf(f);
+    const same = sortFunds(DATA.funds.filter(x => x.company === f.company));
+    const plans = DATA.plan.filter(p => p.code === code);
+    const growth = f.shares_now && f.shares_1y_ago ? f.shares_now / f.shares_1y_ago - 1 : null;
+    const yi = v => v == null ? '' : (v / 1e8).toFixed(2) + ' 亿份';
+    return { title: f.name, sub: `${f.code} · ${f.company}基金 · ${f.share} 类 · 纳斯达克100 场外`,
+      thumbIcon: `<b style="font-size:22px;color:var(--blue)">${f.company.slice(0, 1)}</b>`, thumbBg: 'var(--seg-bg)',
+      tags: [kstatus(f.status), f.direct_only ? ktag('仅直销', 'tag-orange') : f.dt_open ? ktag('代销可定投', 'tag-blue') : ktag('代销暂不可定投'),
+        plans.length ? ktag('在每日方案中', 'tag-green') : ''],
+      big: paused ? `<b style="color:var(--red)">暂停</b><span class="muted">申购</span>`
+        : `<b>${fmt(limitOf(f))} 元</b><span class="muted">每日可买上限${r ? ` · 公司评分 ${Math.round(r.total)} 分` : ''}</span>`,
+      body: KIT.sec('申购限额', KIT.kv([['状态', f.status], ['代销 / 日', paused ? '—' : f.direct_only ? '不代销' : f.agency_limit != null ? fmt(f.agency_limit) + ' 元' : ''],
+          ['直销 / 日', paused ? '—' : f.direct_limit ? fmt(f.direct_limit) + ' 元' : '同代销'], ['代销平台定投', f.direct_only ? '不代销' : f.dt_open ? '可以' : '暂不可'], ['申购费率（天天基金）', f.rate]])
+          + (f.status_raw ? `<p class="note">天天基金原文：${f.status_raw}${f.direct_limit ? ` · 直销限额手动更新于 ${DATA.direct_updated_at}` : ''}</p>` : ''))
+        + KIT.sec('费用与规模', KIT.kv([['管理费', f.mgmt_fee != null ? f.mgmt_fee + '%' : ''], ['托管费', f.custody_fee != null ? f.custody_fee + '%' : ''],
+          ['年费合计', fee != null ? fee.toFixed(2) + '%' : ''], ['规模', f.size != null ? f.size + ' 亿' : ''], ['年化跟踪误差', f.tracking_error != null ? f.tracking_error + '%' : '']]))
+        + KIT.sec('净值与份额', KIT.kv([['单位净值', f.nav ? `${f.nav}` : ''], ['净值日期', f.nav_date], ['当前份额', yi(f.shares_now)], ['份额日期', f.shares_date],
+          ['一年前份额', yi(f.shares_1y_ago)], ['一年份额变化', pct(growth)]]))
+        + KIT.sec('用户数据', KIT.kv([['近 1 月定投人数', f.dt_count != null ? fmt(f.dt_count) : ''], ['自选关注人数', f.fav_count != null ? fmt(f.fav_count) : ''],
+          ['平均持有天数', f.avg_hold != null ? Math.round(f.avg_hold) + ' 天' : '']]), '天天基金平台')
+        + (plans.length ? KIT.sec('每日方案', `<div class="kit-rows">${plans.map(p => `<div class="kit-row"><span class="kit-rt">${p.channel === 'direct' ? p.app + '（直销）' : '支付宝（代销）'}</span>
+          <span class="kit-rm">${planAmount(p, f) ? fmt(planAmount(p, f)) + ' 元/日' : '暂停中'}</span></div>`).join('')}</div>`) : '')
+        + (r ? KIT.sec(`${f.company} · 综合评分 ${Math.round(r.total)} 分`, scoreTable(r), `<a class="kit-morelink" href="#/item/company/${encodeURIComponent(f.company)}" data-kit-go="company/${encodeURIComponent(f.company)}">公司详情 →</a>`) : '')
+        + (same.length > 1 ? KIT.sec(`${f.company}旗下其它份额`, `<div class="kit-rows">${same.map(x => fundLine(x, f)).join('')}</div>`) : ''),
+      acts: [{ text: '天天基金页 ↗', href: ttUrl(f.code) }] };
+  });
+
+  KIT.item('company', name => {
+    const r = DATA && ranking().find(x => x.company === name); if (!r) return null;
+    const fs = sortFunds(DATA.funds.filter(f => f.company === name)), no = ranking().indexOf(r) + 1;
+    return { title: `${name}基金 · 纳指100 场外`, sub: `综合评分第 ${no} 名 · 旗下 ${fs.length} 只人民币份额`,
+      thumbIcon: `<b style="font-size:22px;color:var(--blue)">${name.slice(0, 1)}</b>`, thumbBg: 'var(--seg-bg)',
+      tags: [r.paused ? ktag('全部暂停', 'tag-red') : ktag(`最高 ${fmt(r.raw.limit)} 元/日`, 'tag-green')],
+      big: `<b>${Math.round(r.total)}</b><span class="muted">分 · 用户 ${Math.round(r.userScore)} · 基金 ${Math.round(r.fundScore)}</span>`,
+      body: KIT.sec('评分拆解', scoreTable(r)) + KIT.sec('旗下基金', `<div class="kit-rows">${fs.map(f => fundLine(f)).join('')}</div>`),
+      acts: [{ text: `${r.rep.code} 天天基金页 ↗`, href: ttUrl(r.rep.code) }] };
+  });
+
+  // ── 列表页：限额总表全部 ──
+  const LPAGE = 30;
+  let listN = LPAGE;
+  KIT.list('funds', (_, q, box) => {
+    const flt = q.get('f') || 'all', by = q.get('sort') || 'default';
+    const all = sortFunds(DATA.funds.filter(f => matches(f, flt)), by);
+    const href = (f, s) => '#/list/funds?' + new URLSearchParams({ ...(f !== 'all' && { f }), ...(s !== 'default' && { sort: s }) });
+    box.innerHTML = KIT.shell({ title: '纳指100 场外基金', note: `${all.length} 只 · 限额更新于 ${DATA.updated_at || '—'}`,
+      chips: FILTERS.map(([k, n]) => ({ text: n, href: href(k, by), on: k === flt, count: DATA.funds.filter(f => matches(f, k)).length })),
+      sort: SORTS, sortVal: by,
+      body: `<div class="list">${FUND_HEAD}${all.slice(0, listN).map(fundRow).join('') || EMPTY_ROW}</div>
+        <p class="note">评分按公司计算，同一公司的各份额沿用同一分数；年费率 = 管理费 + 托管费。点任意一行看基金完整档案。</p>`,
+      more: all.length > listN ? `加载更多（${listN} / ${all.length}）` : '' });
+  });
+  document.addEventListener('click', e => { if (e.target.closest('[data-kit-more]')) { listN += LPAGE; render(); } });
+  document.addEventListener('change', e => {
+    if (!e.target.matches('[data-kit-sort]')) return;
+    const r = KIT.parse(), q = new URLSearchParams(r ? r.q : '');
+    e.target.value === 'default' ? q.delete('sort') : q.set('sort', e.target.value);
+    location.hash = '#/list/funds' + (q.toString() ? '?' + q : '');
+  });
+  window.addEventListener('hashchange', () => { if (KIT.parse()?.kind !== 'item') listN = LPAGE; }, true);
+
+  // ── 视图：列表页时隐藏长文档，回首页时恢复 ──
+  function render() {
+    if (!DATA) return;
+    const isList = KIT.route(document.getElementById('list-page'));
+    document.getElementById('list-page').hidden = !isList;
+    document.getElementById('home-hero').hidden = isList;
+    document.getElementById('home-main').hidden = isList;
+    if (isList) return;
+    renderRanking();
+    renderPlan();
+    renderFunds();
+  }
+
+  // ── 深浅色切换（默认跟随系统）──
+  const store = {
+    get: (k, d) => { try { return localStorage.getItem('nasdaq-dca:' + k) ?? d; } catch (e) { return d; } },
+    set: (k, v) => { try { localStorage.setItem('nasdaq-dca:' + k, v); } catch (e) {} },
+  };
+  function applyTheme(t) {
+    if (t) { document.documentElement.dataset.theme = t; document.documentElement.style.colorScheme = t; }
+  }
+  applyTheme(store.get('theme', ''));
+  document.getElementById('theme').addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const t = cur === 'dark' ? 'light' : 'dark';
+    applyTheme(t);
+    store.set('theme', t);
+  });
+
   // 导航高亮当前板块
   const navLinks = [...document.querySelectorAll('#nav-links a')];
   const spy = new IntersectionObserver(entries => {
@@ -782,14 +1198,15 @@
   }, { rootMargin: '-50% 0px -50% 0px' });
   document.querySelectorAll('main section').forEach(s => spy.observe(s));
 
+  KIT.init(render);
   fetch('data.json?t=' + Date.now())
     .then(r => r.json())
     .then(d => {
       DATA = d;
+      RANK = null;
       document.getElementById('updated').textContent = `限额更新于 ${d.updated_at || '—'}`;
-      renderRanking();
-      renderPlan();
-      renderFunds();
+      render();
+      KIT.boot();
     })
     .catch(() => {
       document.getElementById('updated').textContent = '数据加载失败';
